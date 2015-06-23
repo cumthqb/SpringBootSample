@@ -1,0 +1,37 @@
+server:
+    port: 8081
+    session-timeout: 1800
+    tomcat:
+        remote-ip-header: x-forwarded-for
+        uri-encoding: UTF-8
+
+spring:
+    application:
+        name: sample
+    datasource:
+        url: jdbc:mysql://localhost:3306/mysite
+        username: root
+        password:
+        driver-class: com.mysql.jdbc.Driver
+    mybatis:
+        configLocation: classpath:mybatis-config.xml
+    view:
+        prefix: /webjars/jsp
+        suffix: .jsp
+    http:
+        encoding:
+            charset: UTF-8
+            enabled: true
+            force: true
+
+banner:
+    location: /config/banner.txt
+
+multipart:
+    max-file-size: 1Mb
+    max-request-size: 10Mb
+
+rest:
+    template:
+        readTimeout: 5000
+        connectTimeout: 5000

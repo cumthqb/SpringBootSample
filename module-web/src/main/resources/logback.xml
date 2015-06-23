@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="true" scanPeriod="60 seconds">
+    <contextName>sample</contextName>
+    <property scope="context" name="CHARSET" value="utf-8"/>
+    <property scope="context" name="appName" value="sample"/>
+    <property scope="context" name="LOG_HOME" value="/logs"/>
+    <property scope="context" name="APP_LOG_HOME" value="${LOG_HOME}/${appName}/app"/>
+    <property scope="context" name="ERR_LOG_HOME" value="${LOG_HOME}/${appName}/err"/>
+    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+    <property scope="context" name="APP_PATTERN" value='%d{yyyy-MM-dd HH:mm:ss}|%level|%C\:%M|%L|%thread|"%replace(%.-4000msg){"\n",""}"|"%.-2000ex{5}"%n'/>
+    <property scope="context" name="CONSOLE_PATTERN" value='%d{yyyy-MM-dd HH:mm:ss.SSS}-[%thread]-[%level]-[%msg]-%C\:%M:%L %ex{full}%n'/>
+    <property scope="context" name="ERR_PATTERN" value='${APP_PATTERN}'/>
+
+    <!-- ERROR日志文件 -->
+    <appender name="ERR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 只记录warn及以上级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <file>${ERR_LOG_HOME}/${HOSTNAME}.error.ing</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名，按天生成文件名 -->
+            <fileNamePattern>${ERR_LOG_HOME}/${HOSTNAME}.error.%d{yyyy-MM-dd}.log.%i.zip
+            </fileNamePattern>
+            <MaxHistory>60</MaxHistory>
+            <!--日志文件保留天数 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- 按时间回滚的同时，按文件大小来回滚 -->
+                <maxFileSize>30MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CHARSET}</charset>
+            <pattern>${ERR_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 开发者日志文件 -->
+    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${APP_LOG_HOME}/${HOSTNAME}.app.ing</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <fileNamePattern>${APP_LOG_HOME}/${HOSTNAME}.%d{yyyy-MM-dd_HH}.log.%i
+            </fileNamePattern>
+            <MaxHistory>240</MaxHistory>
+            <!--日志文件保留个数 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- 按时间回滚的同时，按文件大小来回滚 -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CHARSET}</charset>
+            <pattern>${APP_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

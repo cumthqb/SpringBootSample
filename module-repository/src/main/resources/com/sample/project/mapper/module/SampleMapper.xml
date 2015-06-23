@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.sample.project.mapper.module.SampleMapper">
+    <!-- 查询字段 -->
+    <sql id="sampleColumns">
+        user_id,user_name
+    </sql>
+
+
+    <!-- 查询结果集 -->
+    <resultMap id="sampleResultMap" type="com.sample.project.entity.module.Sample">
+        <result property="userId" column="user_id" />
+        <result property="userName" column="user_name" />
+    </resultMap>
+
+    <!-- 查询单个用户 -->
+    <select id="getSample" parameterType="String" resultMap="sampleResultMap">
+        SELECT
+        <include refid="sampleColumns" />
+        FROM sample where user_id=#{userId}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="list" resultMap="sampleResultMap">
+        SELECT
+        <include refid="sampleColumns" />
+        FROM sample
+    </select>
+
+    <!-- 新增记录 -->
+    <insert id="add">
+        INSERT INTO sample
+        ( user_id,user_name )
+        VALUES
+        ( #{vo.userId},#{vo.userName})
+    </insert>
+
+    <!-- 更新记录 -->
+    <update id="update">
+        UPDATE sample SET user_name = #{vo.userName} WHERE user_id = #{vo.userId}
+    </update>
+</mapper>
